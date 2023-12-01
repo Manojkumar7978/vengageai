@@ -25,7 +25,7 @@ app.post('/user',async (req,res)=>{
     }
 })
 
-// to add contact
+// to add contact and get updted contact list
 app.post('/contact/:userid',async (req,res)=>{
     let {userid}=req.params
     let data=req.body
@@ -34,33 +34,53 @@ app.post('/contact/:userid',async (req,res)=>{
         Name:data.Name,
         Number:data.Number,
     })
-    res.send(contact)
+    let contacts=await contactModel.find({userId:userid})
+    res.send(contacts)
 
 })
 
 // to get all the contacts of respective user
 app.get('/contacts/:userid',async (req,res)=>{
+  try {
     let {userid}=req.params
+    let{q}=req.query
+    if(!q || q.trim() === ''){
+
     let contacts=await contactModel.find({userId:userid})
     res.send(contacts)
+    }else{
+        let contacts = await contactModel.find({
+            userId: userid,
+            $or: [
+                { Name: { $regex: q, $options: 'i' } }  
+            ]
+        });
+        res.send(contacts)
+    }
+  } catch (error) {
+    console.log(error)
+  }
 })
 
-// to delete a contact of a user
+// to delete a contact of a user and get updated contact list
 app.delete('/contact/:contactid',async (req,res)=>{
     let {contactid}=req.params
     await contactModel.deleteOne({_id:contactid})
     res.send('Contact deleted sucessfully')
 })
 
-
 //to update a contact of a user
 
 app.patch('/contact/:contactid',async (req,res)=>{
     let {contactid}=req.params
+    console.log(contactid)
     let data=req.body
     let updatedData=await contactModel.findByIdAndUpdate(contactid,data)
     res.send(updatedData)
 })
+
+//api for search functionality
+
 
 
 
