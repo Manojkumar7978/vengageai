@@ -5,6 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import axios from 'axios'
 
+//fetch api for patch or update a contact
 async function EditContact(data,id){
 try {
     let res=await axios.patch(`${process.env.REACT_APP_URL}/contact/${id}`,data)
@@ -37,7 +38,7 @@ export default function Editpage() {
             })
         }
     }
-    
+
   return (
     <chakra.div p={3}>
        {/* header section */}

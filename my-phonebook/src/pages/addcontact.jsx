@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import axios from 'axios'
 
-//post a new contact
+//fetch api for post a new contact
 const addcontact=async (contact,id)=>{
     try {
         console.log('object')

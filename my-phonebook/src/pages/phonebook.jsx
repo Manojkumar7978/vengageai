@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { chakra, Box,Text,
     Input,
     Avatar,
@@ -10,9 +10,9 @@ import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 
 // featch api for getting all the contacts of respective users
-async function getData(userid){
+async function getData(userid,q){
     try {
-        let data=await axios.get(`${process.env.REACT_APP_URL}/contacts/${userid}`)
+        let data=await axios.get(`${process.env.REACT_APP_URL}/contacts/${userid}?q=${q}`)
         return data.data
     } catch (error) {
         return error
@@ -26,9 +26,11 @@ export default function Phonebook() {
     let contact=useSelector((e)=> e.contacts)
     const dispatch=useDispatch()
     const navigate=useNavigate()
+    let [query,setquery]=useState("")
 
+    //every time query change runs the useeffect
     useEffect(()=>{
-            getData(data[0]._id)
+            getData(data[0]._id,query)
             .then((res)=>{
                 dispatch({
                     type:'CONTACT',
@@ -38,7 +40,7 @@ export default function Phonebook() {
             }).catch((err)=>{
                 return err
             })
-    },[])
+    },[query])
 
     
   return (
@@ -62,7 +64,11 @@ export default function Phonebook() {
         <InputLeftElement pointerEvents='none'>
       <Search2Icon color='gray.300' />
     </InputLeftElement>
-        <Input bg={'gray.100'}  type={'text'} placeholder='Search Contacts' borderRadius={50} />
+        <Input
+        onChange={(e)=>{
+            setquery(e.target.value)
+        }}
+        bg={'gray.100'}  type={'text'} placeholder='Search Contacts' borderRadius={50} />
         </InputGroup>
         </Box>
 
