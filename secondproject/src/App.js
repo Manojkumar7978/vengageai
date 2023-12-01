@@ -1,18 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import Calendar from 'react-calendar';
-import {Box, Button} from '@chakra-ui/react'
+import {Box, Button, Text} from '@chakra-ui/react'
 import 'react-calendar/dist/Calendar.css';
 
 function App() {
   const [selectedDate, setSelectedDate] = useState(null);
   const [unavailable, setunavailable] = useState(false);
-  let [timing,setTiming]=useState({})
+  let [timing,setTiming]=useState({
+    start:'08:00',
+    end:'17:00',
+    unavailability:[]
+  })
+
 let[interval,setIntervals]=useState([])
+
+
+// change the selected date
   const handleDateChange = (date) => {
     setSelectedDate(date);
     availability(date.getDay())
   };
-
+//check available in that date or not for calender
   const checkIfUnavailable = (date) => {
     const day = date.getDay();
 
@@ -24,9 +32,8 @@ let[interval,setIntervals]=useState([])
     return true
     return false; 
   };
-  
+  //set the timing availability
   const availability=(day)=>{
-    console.log(day)
     if(day==1 || day==2 || day==4 || day==5){
       setTiming({
         start:'08:00',
@@ -62,10 +69,10 @@ let[interval,setIntervals]=useState([])
     }
   }
 
+  // Time availability varies on different days
   const generateTimeSlots = () => {
     const intervals = [];
     let currentTime = timing.start;
-    console.log(timing)
     while (currentTime <= timing.end) {
       intervals.push(currentTime);
       const [hours, minutes] = currentTime.split(':');
@@ -77,9 +84,26 @@ let[interval,setIntervals]=useState([])
     return intervals;
   };
 
+  const isAvailable=(time)=>{
+    const [hours, minutes] = time.split(':');
+    const selectedDate = new Date(0, 0, 0, hours, minutes);
+
+    for (const range of timing.unavailability) {
+      const start = new Date(0, 0, 0, ...range.start.split(':'));
+      const end = new Date(0, 0, 0, ...range.end.split(':'));
+      if (selectedDate >= start && selectedDate < end) {
+        return true
+      }
+    }
+    return false
+  }
+
   useEffect(()=>{
     const day = new Date()
     availability(day.getDay())
+
+    let interval=generateTimeSlots()
+    setIntervals([...interval])
   },[])
 
   useEffect(()=>{
@@ -87,11 +111,18 @@ let[interval,setIntervals]=useState([])
     setIntervals([...interval])
   },[selectedDate])
 
+
+
   return (
     <div className='App'>
-      <h3>Select Date & Time</h3>
+      <Text fontWeight={'700'} textAlign={'center'}>Select Date & Time</Text>
       
-      <Box display={'flex'} gap={10}>
+      <Box display={'flex'}
+      top={'50%'}
+      left={'50%'}
+      position={'absolute'}
+      transform={'translate(-50%,-50%)'}
+      gap={10}>
       <Calendar
       className={'calender'}
       onChange={handleDateChange}
@@ -106,11 +137,13 @@ let[interval,setIntervals]=useState([])
           {
             interval.map((el,ind)=>{
               return <Button 
+              key={el}
               w={'80px'}
               h={'40px'}
               borderRadius={5}
-              bg={'white'}
-              
+              bg={isAvailable(el) ? 'gray.100' : 'white'}
+              isDisabled={isAvailable(el)}
+              cursor={'pointer'}
               >
                   {el}
               </Button>
