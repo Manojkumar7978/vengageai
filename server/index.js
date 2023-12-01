@@ -83,11 +83,11 @@ app.patch('/contact/:contactid',async (req,res)=>{
 
 
 
+let port=process.env.PORT || 8080
 
 
 
-
-app.listen(process.env.PORT,()=>{
+app.listen(port,()=>{
     main()
-    console.log(`server running at port ${process.env.PORT}`)
+    console.log(`server running at port ${port}`)
 })
