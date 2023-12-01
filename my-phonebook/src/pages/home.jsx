@@ -3,11 +3,13 @@ import { Input, Heading,  InputGroup, InputLeftElement, chakra } from '@chakra-u
 import {EmailIcon} from '@chakra-ui/icons'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
+import {useDispatch} from 'react-redux'
 
 
 export default function Home() {
   let[userid,setuserid]=useState()
   let navigate=useNavigate()
+  const dispatch=useDispatch()
 
   // this funtion is helps to signup or login to a user
   const handelMailSubmit=async (e)=>{
@@ -15,8 +17,13 @@ export default function Home() {
     const emailType = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if(emailType.test(userid)){
       console.log(process.env.REACT_APP_URL)
+      // featch api to create a new user or login to exsting user
       let res=await axios.post(`${process.env.REACT_APP_URL}/user`,{
         Email:userid
+      })
+      dispatch({
+        type:'USER',
+        payload:res.data
       })
       navigate('/phonebook')
     }
