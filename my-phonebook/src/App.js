@@ -11,7 +11,9 @@ function App() {
     bg={'black'}>
       <Box className='mobile'>
        <Router/>
+        
       </Box>
+     
    
     </chakra.div>
   );

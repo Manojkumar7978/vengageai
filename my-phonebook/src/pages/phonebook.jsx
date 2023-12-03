@@ -5,9 +5,10 @@ import { chakra, Box,Text,
     InputGroup,
     InputLeftElement} from '@chakra-ui/react'
 import { useDispatch, useSelector } from 'react-redux'
-import { AddIcon, ChevronRightIcon, Search2Icon } from '@chakra-ui/icons'
+import { AddIcon, ChevronRightIcon, DeleteIcon, Search2Icon } from '@chakra-ui/icons'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
+import './style.css'
 
 // featch api for getting all the contacts of respective users
 async function getData(userid,q){
@@ -42,11 +43,26 @@ export default function Phonebook() {
             })
     },[query])
 
+
+   const deleteContact=async (el)=>{
+        await axios.delete(`${process.env.REACT_APP_URL}/contact/${el._id}`)
+        getData(data[0]._id,query)
+            .then((res)=>{
+                dispatch({
+                    type:'CONTACT',
+                    payload:res
+                })
+
+            }).catch((err)=>{
+                return err
+            })
+    }
     
   return (
-    <chakra.div>
+    <chakra.div  >
        {/* header part and search box*/}
         <Box
+        zIndex={1}
         position={'sticky'}
         top={0}
         bg={'white'}
@@ -71,22 +87,27 @@ export default function Phonebook() {
         bg={'gray.100'}  type={'text'} placeholder='Search Contacts' borderRadius={50} />
         </InputGroup>
         </Box>
-
-        {/* add contact icon */}
-        <Box
+         {/* add contact icon */}
+         <Box
         display={'grid'}
     placeItems={'center'}
     position={'fixed'}
-    bottom={5}
-    right={5}
+    bottom={4}
+    right={4}
+    zIndex={2}
     cursor={'pointer'}
     onClick={()=>{navigate('/addcontact')}}
         borderRadius={'50%'} bg={'blue'} w={10} h={10}>
         <AddIcon color={'white'}  />
         </Box>
 
+       
     {/* All contact container */}
-       <Box p={3}>
+       <div p={3}
+        className='scroll'
+      
+       
+       >
             {
                 contact.length>0 && <>
                 {
@@ -95,11 +116,12 @@ export default function Phonebook() {
                         justifyContent={'space-between'}
                         cursor={'pointer'}
                         key={el._id}
-                        onClick={()=>{
-                            navigate(`/editcontact/${ind}`)
-                        }}
+                        
                         >
                             <Box 
+                            onClick={()=>{
+                                navigate(`/editcontact/${ind}`)
+                            }}
                         display={'flex'}
                         alignItems={'center'}
                         gap={3}
@@ -111,13 +133,15 @@ export default function Phonebook() {
                             </div>
 
                         </Box>
-                        <ChevronRightIcon/>
+                        <DeleteIcon onClick={()=>{
+                            deleteContact(el)
+                        }}/>
                         </Box>
                     })
                 }
                 </>
             }
-        </Box>
+        </div>
         
     </chakra.div>
   )
