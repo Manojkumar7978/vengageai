@@ -8,7 +8,6 @@ import axios from 'axios'
 //fetch api for post a new contact
 const addcontact=async (contact,id)=>{
     try {
-        console.log('object')
         let data=await axios.post(`${process.env.REACT_APP_URL}/contact/${id}`,contact)
         return data.data
     } catch (error) {

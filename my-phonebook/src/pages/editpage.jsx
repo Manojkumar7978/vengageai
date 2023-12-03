@@ -31,7 +31,6 @@ export default function Editpage() {
         if(numbertype.test(contactinput.Number) && 
         (contactinput.Name!==null && contactinput.Name!=="")
         ){
-            console.log(contact._id)
             EditContact(contactinput,contact._id)
             .then((res)=>{
                 navigate('/phonebook')

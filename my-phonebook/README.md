@@ -5,7 +5,7 @@ My Phonebok
 This application is used for managing contacts in phonebook. The interface will include functionalities for listing, searching, editing and adding contacts.
 
 ## Deployed link
-- https://my-phonebook-1w24326wr-manojkumar7978.vercel.app
+- https://my-phonebook-4qvh6w48j-manojkumar7978.vercel.app
 
 ## Tech Stack and library
 - HTML
